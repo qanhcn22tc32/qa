@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý học sinh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url(https://i.pinimg.com/736x/01/d7/56/01d756298cb314dd448f622d7395220c.jpg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: url(https://i.pinimg.com/564x/ce/5d/ec/ce5dec52fce46e3bb6707763302fd9b6.jpg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
+        }
+        label, select, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        input[type="text"], select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .listbox, .actions {
+            width: 45%;
+        }
+        .listbox h3 {
+            text-align: center;
+            color: #555;
+        }
+        .actions button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 12px;
+            background-color: #cf8aad;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .actions button:hover {
+            background-color: #4526cf;
+            transform: scale(1.05);
+        }
+        .actions button:active {
+            transform: scale(0.98);
+        }
+        select {
+            height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            transition: box-shadow 0.3s ease;
+        }
+        select:hover {
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-small {
+            background-color: #f44336;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-small:hover {
+            background-color: #e53935;
+            transform: scale(1.05);
+        }
+        .btn-small:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quản lý học sinh</h2>
+
+    <label for="hoten">Họ tên:</label>
+    <input type="text" id="hoten" placeholder="Nhập họ tên học sinh">
+
+    <label for="lop">Lớp:</label>
+    <select id="lop">
+        <option value="A">Lớp 12A6</option>
+        <option value="B">Lớp CN22TC3.2</option>
+    </select>
+
+    <div class="flex-container">
+        <div class="listbox">
+            <h3>Danh sách Lớp 12A6</h3>
+            <select id="listboxA" multiple></select>
+        </div>
+
+        <div class="actions">
+            <button onclick="addStudent()">Nhập</button>
+            <button onclick="moveToB()">></button>
+            <button onclick="moveToA()"><<</button>
+            <button onclick="moveAllToB()">>></button>
+            <button onclick="moveAllToA()"><<</button>
+            <button class="btn-small" onclick="deleteStudent()">Xóa</button>
+        </div>
+
+        <div class="listbox">
+            <h3>Danh sách Lớp CN22TC3</h3>
+            <select id="listboxB" multiple></select>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addStudent() {
+        const hoten = document.getElementById('hoten').value;
+        const lop = document.getElementById('lop').value;
+
+        if (hoten.trim() === '') {
+            alert('Vui lòng nhập họ tên học sinh');
+            return;
+        }
+
+        const listbox = lop === 'A' ? document.getElementById('listboxA') : document.getElementById('listboxB');
+        const option = document.createElement('option');
+        option.text = hoten;
+        listbox.add(option);
+
+        document.getElementById('hoten').value = '';  // Clear input field
+    }
+
+    function moveToB() {
+        moveSelected(document.getElementById('listboxA'), document.getElementById('listboxB'));
+    }
+
+    function moveToA() {
+        moveSelected(document.getElementById('listboxB'), document.getElementById('listboxA'));
+    }
+
+    function moveAllToB() {
+        moveAll(document.getElementById('listboxA'), document.getElementById('listboxB'));
+    }
+
+    function moveAllToA() {
+        moveAll(document.getElementById('listboxB'), document.getElementById('listboxA'));
+    }
+
+    function deleteStudent() {
+        const listboxA = document.getElementById('listboxA');
+        const listboxB = document.getElementById('listboxB');
+
+        if (listboxA.selectedIndex >= 0) {
+            listboxA.remove(listboxA.selectedIndex);
+        } else if (listboxB.selectedIndex >= 0) {
+            listboxB.remove(listboxB.selectedIndex);
+        } else {
+            alert('Vui lòng chọn học sinh để xóa');
+        }
+    }
+
+    function moveSelected(fromList, toList) {
+        const selectedOptions = [...fromList.options].filter(option => option.selected);
+        selectedOptions.forEach(option => {
+            const newOption = document.createElement('option');
+            newOption.text = option.text;
+            toList.add(newOption);
+            fromList.remove(option.index);
+        });
+    }
+
+    function moveAll(fromList, toList) {
+        const allOptions = [...fromList.options];
+        allOptions.forEach(option => {
+            const newOption = document.createElement('option');
+            newOption.text = option.text;
+            toList.add(newOption);
+        });
+        fromList.innerHTML = '';  // Clear the listbox
+    }
+</script>
+
+</body>
+</html>
